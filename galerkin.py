@@ -35,7 +35,7 @@ class FunctionSpace:
 
     @property
     def reference_domain(self):
-        raise RuntimeError
+        return (-1, 1)
 
     @property
     def domain_factor(self):
@@ -112,7 +112,10 @@ class Legendre(FunctionSpace):
         raise NotImplementedError
 
     def mass_matrix(self):
-        raise NotImplementedError
+        A = np.zeros((self.N + 1, self.N + 1))
+        for i in range(self.N + 1):
+            A[i, i] = 2 / (2 * i + 1)
+        return A
 
     def eval(self, uh, xj):
         xj = np.atleast_1d(xj)
@@ -140,7 +143,14 @@ class Chebyshev(FunctionSpace):
         raise NotImplementedError
 
     def mass_matrix(self):
-        raise NotImplementedError
+        A = np.zeros((self.N + 1, self.N + 1))
+        c_i = 1
+        c_0 = 2
+
+        for i in range(self.N + 1):
+            A[i, i] = (c_i * sp.pi) / 2
+        A[0, 0] = (c_0 * sp.pi) / 2
+        return A
 
     def eval(self, uh, xj):
         xj = np.atleast_1d(xj)
